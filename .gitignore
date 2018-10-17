@@ -1,10 +1,3 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
 # Runtime data
 pids
 *.pid
@@ -59,3 +52,12 @@ typings/
 
 # next.js build output
 .next
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*
