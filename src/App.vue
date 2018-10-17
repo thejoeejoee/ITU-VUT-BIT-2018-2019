@@ -1,12 +1,17 @@
 <template>
     <div id="app">
         <h1>Timepicker</h1>
+
+        <xkolar71></xkolar71>
     </div>
 </template>
 
 <script>
+    import xkolar71 from './components/xkolar71'
 
-    export default {}
+    export default {
+        components: {xkolar71}
+    }
 </script>
 
 <style>
