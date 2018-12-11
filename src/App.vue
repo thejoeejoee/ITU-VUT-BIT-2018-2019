@@ -1,8 +1,11 @@
 <template>
     <div id="app">
-        <h1>Timepicker</h1>
+        <h1>ITU Timepicker</h1>
 
-        <xkolar71></xkolar71>
+        <xkolar71 v-if="showFirst" v-model="timeFirst" @submit="showFirst = !showFirst"></xkolar71>
+        xkolar71: <strong>{{ timeFirst ? timeFirst.toLocaleTimeString() : '' }} </strong>
+
+        <a @click="showFirst = true">Open</a>
     </div>
 </template>
 
@@ -10,7 +13,13 @@
     import xkolar71 from './components/xkolar71'
 
     export default {
-        components: {xkolar71}
+        components: {xkolar71},
+        data() {
+            return {
+                timeFirst: null,
+                showFirst: true,
+            }
+        }
     }
 </script>
 
@@ -22,5 +31,13 @@
         text-align: center;
         color: #2c3e50;
         margin-top: 60px;
+    }
+
+    a {
+        background-color: dodgerblue;
+        padding: .5em;
+        border-radius: 5pt;
+        color: white;
+        cursor: pointer;
     }
 </style>
