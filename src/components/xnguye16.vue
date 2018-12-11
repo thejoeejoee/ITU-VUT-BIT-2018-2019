@@ -1,8 +1,7 @@
 <template>
     <div class="selector" @click="$emit('submit')">
-
         <div id="componentContainer" @click.stop>
-            <div id="timeView">
+            <div class="timeView" v-bind:class="{ invalidTimeView: !validTime }">
                 <span class="textCenter"> {{ renderedTime }} </span>
             </div>
             <div class="timeSelection">
@@ -56,6 +55,7 @@ export default {
 
     data() {
         let d = {
+            validTime: false,
             renderedTime: "--:--",
             selectedTime: {
                 hours_1: "-",
@@ -94,6 +94,7 @@ export default {
             d.selectedTime.minutes_2 = this.value.getMinutes() % 10;
             const minutes = ('0' + this.value.getMinutes()).slice(-2);
             d.renderedTime = `${this.value.getHours()}:${minutes}`;
+            d.validTime = true;
         }
 
         return d;
@@ -112,12 +113,16 @@ export default {
             let minutes = selectedTime.minutes_1 * 10 + selectedTime.minutes_2;
 
 
-            if(hours > 23)
+            if(hours > 23) {
                 component.renderedTime = "--:--";
+                component.validTime = false;
+            }
+
             else {
                 minutes = ('0' + minutes).slice(-2);
                 component.renderedTime = `${hours}:${minutes}`;
                 let time = new Date(1970, 0, 0, hours, minutes, 0, 0);
+                component.validTime = true;
                 component.$emit('input', time);
             }
             component.clearLine();
@@ -333,7 +338,7 @@ export default {
     line-height: 50px;
 }
 
-#timeView {
+.timeView {
     background-color: #0284bc;
     color: white;
     width: auto;
@@ -342,6 +347,7 @@ export default {
     font-size: 50px;
     text-align: center;
     line-height: 90px;
+    transition: all ease 450ms;
 }
 
 .textCenter {    
@@ -410,6 +416,10 @@ export default {
 
     background-color: transparent;
     opacity: 0.7;
+}
+
+.invalidTimeView {
+    background-color: #b50000;
 }
 </style>
 
