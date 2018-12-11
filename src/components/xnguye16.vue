@@ -73,7 +73,7 @@ export default {
 
             konvaConfig: {
                 width: 220,
-                height: 520
+                height: 555
             },
 
             mousePressed: false,
