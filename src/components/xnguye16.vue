@@ -136,8 +136,8 @@ export default {
             stage.draw();
         },
 
-         addDot: (newX, newY) => {
-            component.dots.push({
+        addDot(newX, newY) {
+            this.dots.push({
                 x: newX,
                 y: newY,
                 fill: "red",
