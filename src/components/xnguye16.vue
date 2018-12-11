@@ -177,18 +177,20 @@ export default {
                 return;
 
             let dY = [];
+            let dX = [];
             let selectPoints = []
-            
 
-            for(let i = 2; i < points.length; i += 2)
+            for(let i = 3; i < points.length; i += 2)
                 dY.push(points[i] - points[i - 2]);
 
             if(dY.length == 1)
                 return;
 
             for(let i = 1; i < dY.length; i++) {
-                if((dY[i] < 0 && dY[i - 1] > 0) || (dY[i] > 0 && dY[i - 1] < 0) || dY[i] == 0)
+                if((dY[i] < 0 && dY[i - 1] > 0) || (dY[i] > 0 && dY[i - 1] < 0) || dY[i] == 0) {
                     selectPoints.push({ x: points[2 + parseInt(i) * 2], y: points[parseInt(i) * 2 + 3] }); 
+                    //component.addDot(points[2 + parseInt(i) * 2], points[parseInt(i) * 2 + 3])
+                }
             }
 
             // end of the line
@@ -209,6 +211,8 @@ export default {
             const colSelectionMap = { 0: "hours_1", 1: "hours_2", 2: "minutes_1", 3: "minutes_2" };
             let setCols = {hours_1: false, hours_2: false, minutes_1: false, minutes_2: false};
             let result = {};
+            const derTolerance = 2;
+
             for(let key in setCols)
                 result[key] = component.selectedTime[key];
 
@@ -245,6 +249,7 @@ export default {
                     for(let i in selectPoints) {
                         const point = selectPoints[i];
 
+                        
                         if(inRange(point.x, relRect.x, relRect.x + relRect.width) &&
                             inRange(point.y, relRect.y, relRect.y + relRect.height)) {
 
@@ -258,8 +263,8 @@ export default {
                     for(let i in linePoints) {
                         const point = linePoints[i];
 
-                        if(inRange(point.x, relRect.x, relRect.x + relRect.width) &&
-                            inRange(point.y, relRect.y, relRect.y + relRect.height)) {
+                        if(inRange(point.x, relRect.x + derTolerance, relRect.x + relRect.width - derTolerance) &&
+                            inRange(point.y, relRect.y + derTolerance, relRect.y + relRect.height - derTolerance)) {
                             pointsOverNumber[colSelectionType][parseInt($cell.textContent)] += 1;
                         }
                     }
@@ -276,7 +281,9 @@ export default {
             } 
 
             for(let missingCols of missing) {
+                console.log(missingCols, "foo")
                 const stats = pointsOverNumber[missingCols];
+                console.log(stats);
                 
                 const numberWithMax = Object.keys(stats).reduce((a, b) => (stats[a] > stats[b]) ?a :b);
                 result[missingCols] = parseInt((stats[numberWithMax]) 
@@ -295,7 +302,8 @@ export default {
 <style scoped>
 @font-face {
     font-family: Roboto;
-    src: url(https://fonts.googleapis.com/css?family=Roboto);
+    src: url(http://themes.googleusercontent.com/static/fonts/roboto/v11/2UX7WLTfW3W8TclTUvlFyQ.woff) 
+       format('woff');
 }
 
 .selector {
