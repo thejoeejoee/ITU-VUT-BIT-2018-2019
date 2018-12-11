@@ -2,39 +2,42 @@
     <div id="app">
         <h1>ITU Timepicker</h1>
 
-        <xkolar71 v-if="showFirst" v-model="timeFirst" @submit="showFirst = !showFirst"></xkolar71>
-        <div class="openContainer">
-            <span>xkolar71: <strong>{{ timeFirst ? timeFirst.toLocaleTimeString() : '' }} </strong></span>
-            <a @click="showFirst = true">Open</a>
-        </div>
-        <div class="openContainer">
-            <span>xnguye16: <strong>{{ xnguye16.timeFirst ? xnguye16.timeFirst.toLocaleTimeString() : '' }} </strong></span>
-            <a @click="xnguye16.showFirst = true">Open</a>
-        </div>
-        <xnguye16  v-if="xnguye16.showFirst" v-model="xnguye16.timeFirst" @submit="xnguye16.showFirst = !xnguye16.showFirst"/>
+        <xkolar71 v-if="displayed === 1" v-model="time" @submit="displayed = 0"></xkolar71>
+        <xnguye16 v-if="displayed === 2" v-model="time" @submit="displayed = 0"/>
+        <xkavan05 v-if="displayed === 3" v-model="time" @submit="displayed = 0"/>
+
+        <br>
+
+        <div class="time"><strong>{{ time ? time.toLocaleTimeString() : '' }} </strong></div>
+
+        <br>
+
+        <a @click="displayed = 1">xkolar71</a>
+
+        <a @click="displayed = 2">xnguye16</a>
+
+        <a @click="displayed = 3">xkavan05</a>
+
     </div>
 </template>
 
 <script>
     import xkolar71 from './components/xkolar71'
     import xnguye16 from './components/xnguye16'
+    import xkavan05 from './components/xkavan05'
 
     export default {
-        components: {xkolar71, xnguye16},
+        components: {xkolar71, xnguye16, xkavan05},
         data() {
             return {
-                timeFirst: null,
-                showFirst: true,
-                xnguye16: {
-                    timeFirst: null,
-                    showFirst: true,
-                }
+                displayed: 0,
+                time: null,
             }
         }
     }
 </script>
 
-<style>
+<style scoped>
     #app {
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
@@ -44,15 +47,17 @@
         margin-top: 60px;
     }
 
-    .openContainer {
-        margin-top: 30px;
-    }
-
     a {
         background-color: dodgerblue;
         padding: .5em;
         border-radius: 5pt;
         color: white;
         cursor: pointer;
+        margin-right: 1em;
+    }
+
+    .time {
+        font-weight: bold;
+
     }
 </style>
