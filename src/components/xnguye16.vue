@@ -1,39 +1,42 @@
 <template>
-    <div id="componentContainer">
-        <div id="timeView">
-            <span class="textCenter"> {{ renderedTime }} </span>
-        </div>
-        <div class="timeSelection">
-            <div id="selectionsContainer"
-                v-on:mousemove="handleMouseMove"
-                v-on:mousedown="handleMouseDown"
-                v-on:mouseup="handleMouseUp"
-                v-on:mouseleave="handleMouseLeave">
-                <div v-for="(data, index) in selections" :key="index" v-bind:index="index" class="selectionCol">
-                    <div class="numberSelection" 
-                        v-bind:class="{ selectionSplit: index == 'hours_2', selectedNumber: selectedTime[index] == i }" 
-                        v-on:click="selectNumber(index, i)"
-                        v-for="i in data" :key="i"
-                        v-bind:index="i">
-                        {{ i }}
+    <div class="selector" @click="$emit('submit')">
+
+        <div id="componentContainer" @click.stop>
+            <div id="timeView">
+                <span class="textCenter"> {{ renderedTime }} </span>
+            </div>
+            <div class="timeSelection">
+                <div id="selectionsContainer"
+                    v-on:mousemove="handleMouseMove"
+                    v-on:mousedown="handleMouseDown"
+                    v-on:mouseup="handleMouseUp"
+                    v-on:mouseleave="handleMouseLeave">
+                    <div v-for="(data, index) in selections" :key="index" v-bind:index="index" class="selectionCol">
+                        <div class="numberSelection" 
+                            v-bind:class="{ selectionSplit: index == 'hours_2', selectedNumber: selectedTime[index] == i }" 
+                            v-on:click="selectNumber(index, i)"
+                            v-for="i in data" :key="i"
+                            v-bind:index="i">
+                            {{ i }}
+                        </div>
                     </div>
                 </div>
+
+                <v-stage ref="stage" :config="konvaConfig" class="canvasOverlay">
+                    <v-layer ref="layer">
+                        <v-line ref="line" :config="lineConfig">
+                        </v-line>
+                    </v-layer>
+
+                    <v-layer>
+                        <v-circle v-for="item in dots" :key="item.id" :config="item">
+                        </v-circle>
+                    </v-layer>
+                </v-stage>      
             </div>
-
-            <v-stage ref="stage" :config="konvaConfig" class="canvasOverlay">
-                <v-layer ref="layer">
-                    <v-line ref="line" :config="lineConfig">
-                    </v-line>
-                </v-layer>
-
-                <v-layer>
-                    <v-circle v-for="item in dots" :key="item.id" :config="item">
-                    </v-circle>
-                </v-layer>
-            </v-stage>      
-        </div>
-        <div id="submitButton">
-            <span class="textCenter"> Submit </span>
+            <div id="submitButton" @click="$emit('submit')">
+                <span class="textCenter"> Submit </span>
+            </div>
         </div>
     </div>
 </template>
@@ -102,6 +105,8 @@ export default {
             else {
                 minutes = ('0' + minutes).slice(-2);
                 component.renderedTime = `${hours}:${minutes}`;
+                let time = new Date(1970, 0, 0, hours, minutes, 0, 0);
+                component.$emit('input', time);
             }
         },
         selectNumber: (numberOrder, number) => { 
@@ -191,8 +196,13 @@ export default {
             const containerBoundingBox = $selectionContainer.getBoundingClientRect();
 
             const colSelectionMap = { 0: "hours_1", 1: "hours_2", 2: "minutes_1", 3: "minutes_2" };
-            let result = { hours_1: "-", hours_2: "-", minutes_1: "-", minutes_2: "-" };
+            let setCols = {hours_1: false, hours_2: false, minutes_1: false, minutes_2: false};
+            let result = {};
+            for(let key in setCols)
+                result[key] = component.selectedTime[key];
+
             let pointsOverNumber = {}
+
             for(let key in component.selections) {
                 pointsOverNumber[key] = {};
                 for(let number in component.selections[key])
@@ -227,8 +237,9 @@ export default {
                         if(inRange(point.x, relRect.x, relRect.x + relRect.width) &&
                             inRange(point.y, relRect.y, relRect.y + relRect.height)) {
 
-                            if(result[colSelectionType] != "-")
+                            if(setCols[colSelectionType])
                                 continue;
+                            setCols[colSelectionType] = true;
                             result[colSelectionType] = parseInt($cell.textContent);
                         }
                     }
@@ -260,6 +271,23 @@ export default {
                 result[missingCols] = parseInt((stats[numberWithMax]) ?numberWithMax :0);
             }
 
+            /**const missing = Object.keys(setCols).filter(x => !setCols[x]);
+            if(missing.length >= 3) {
+                for(let col of Object.keys(setCols).filter(x => setCols[x]))
+                    component.selectedTime[col] = result[col];
+                component.renderTime();
+                return;
+            } 
+
+            for(let missingCols of missing) {
+                const stats = pointsOverNumber[missingCols];
+                
+                const numberWithMax = Object.keys(stats).reduce((a, b) => (stats[a] > stats[b]) ?a :b);
+                result[missingCols] = parseInt((stats[numberWithMax]) 
+                    ?numberWithMax :(result[missingCols] == "-" ?0 :result[missingCols]));
+            } */
+
+
             component.selectedTime = result;
             component.renderTime();
         }
@@ -275,6 +303,19 @@ export default {
     src: url(https://fonts.googleapis.com/css?family=Roboto);
 }
 
+.selector {
+    position: fixed;
+            background-color: #bbbbbb66;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column-reverse;
+}
+
 #submitButton {
     width: auto;
     height: 50px;
@@ -288,7 +329,7 @@ export default {
 
 #timeView {
     background-color: #0284bc;
-    color: #d7edf3;
+    color: white;
     width: auto;
     height: 90px;
     font-family: Roboto;
