@@ -300,18 +300,19 @@ export default {
 
 .selector {
     position: fixed;
-            background-color: #bbbbbb66;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column-reverse;
+    background-color: #bbbbbb66;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column-reverse;
 }
 
 #submitButton {
+    cursor: pointer;
     width: auto;
     height: 50px;
     background-color: #414142;
@@ -359,6 +360,7 @@ export default {
 }
 
 #selectionsContainer {
+    cursor: pointer;
     margin: 20px 10px 20px 10px;
     display: flex;
     flex-direction: row;
@@ -369,6 +371,7 @@ export default {
 }
 
 .numberSelection {
+    cursor: pointer;
     padding: 0px 12px 0px 12px;
     flex-direction: column;
     font-family: Roboto;
