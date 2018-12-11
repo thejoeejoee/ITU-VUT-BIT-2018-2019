@@ -3,17 +3,19 @@
         <h1>ITU Timepicker</h1>
 
         <xkolar71 v-if="showFirst" v-model="timeFirst" @submit="showFirst = !showFirst"></xkolar71>
+        <xnguye16  v-if="showFirst" v-model="timeFirst" @submit="showFirst = !showFirst"/>
         xkolar71: <strong>{{ timeFirst ? timeFirst.toLocaleTimeString() : '' }} </strong>
-
+        
         <a @click="showFirst = true">Open</a>
     </div>
 </template>
 
 <script>
     import xkolar71 from './components/xkolar71'
+    import xnguye16 from './components/xnguye16'
 
     export default {
-        components: {xkolar71},
+        components: {xkolar71, xnguye16},
         data() {
             return {
                 timeFirst: null,
