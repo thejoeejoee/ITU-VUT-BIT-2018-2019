@@ -10,7 +10,7 @@
                     v-on:mousemove="handleMouseMove"
                     v-on:mousedown="handleMouseDown"
                     v-on:mouseup="handleMouseUp"
-                    v-on:mouseleave="handleMouseLeave">
+                    v-on:mouseleave="handleMouseUp">
                     <div v-for="(data, index) in selections" :key="index" v-bind:index="index" class="selectionCol">
                         <div class="numberSelection" 
                             v-bind:class="{ selectionSplit: index == 'hours_2', selectedNumber: selectedTime[index] == i }" 
@@ -169,7 +169,6 @@ export default {
             component.mousePressed = false; 
             component.analyzeLine();
         },
-        handleMouseLeave: () => { component.mousePressed = false; },
 
         analyzeLine: () => {
             const line = component.$refs.line;
@@ -268,9 +267,9 @@ export default {
             }
             
             // remaining
-            const missing = Object.keys(result).filter(x => result[x] == "-");
+            const missing = Object.keys(result).filter(x => !setCols[x]);
             if(missing.length >= 3) {
-                for(let col of Object.keys(result).filter(x => result[x] != "-"))
+                for(let col of Object.keys(result).filter(x => setCols[x]))
                     component.selectedTime[col] = result[col];
                 component.renderTime();
                 return;
@@ -280,7 +279,8 @@ export default {
                 const stats = pointsOverNumber[missingCols];
                 
                 const numberWithMax = Object.keys(stats).reduce((a, b) => (stats[a] > stats[b]) ?a :b);
-                result[missingCols] = parseInt((stats[numberWithMax]) ?numberWithMax :0);
+                result[missingCols] = parseInt((stats[numberWithMax]) 
+                    ?numberWithMax :(result[missingCols] == "-" ?0 :result[missingCols]));
             }
 
             component.selectedTime = result;
@@ -349,10 +349,9 @@ export default {
 }
 
 #componentContainer {
-    display: inline-block;
     background-color: #efefef;
     width: 220px;
-    height: 90 + 520 + 50px;
+    height: 660px;
 
     position: relative;
     display: flex;
