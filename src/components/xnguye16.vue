@@ -55,7 +55,7 @@ export default {
     },
 
     data() {
-        return {
+        let d = {
             renderedTime: "--:--",
             selectedTime: {
                 hours_1: "-",
@@ -86,7 +86,19 @@ export default {
             },
             dots: []
         };
+
+        if(this.value instanceof Date) {
+            d.selectedTime.hours_1 = Math.floor(this.value.getHours() / 10).toString();
+            d.selectedTime.hours_2 = this.value.getHours() % 10;
+            d.selectedTime.minutes_1 = Math.floor(this.value.getMinutes() / 10);
+            d.selectedTime.minutes_2 = this.value.getMinutes() % 10;
+            const minutes = ('0' + this.value.getMinutes()).slice(-2);
+            d.renderedTime = `${this.value.getHours()}:${minutes}`;
+        }
+
+        return d;
     },
+    props: {value: {}},
 
     methods: {
         renderTime: () => {
@@ -270,23 +282,6 @@ export default {
                 const numberWithMax = Object.keys(stats).reduce((a, b) => (stats[a] > stats[b]) ?a :b);
                 result[missingCols] = parseInt((stats[numberWithMax]) ?numberWithMax :0);
             }
-
-            /**const missing = Object.keys(setCols).filter(x => !setCols[x]);
-            if(missing.length >= 3) {
-                for(let col of Object.keys(setCols).filter(x => setCols[x]))
-                    component.selectedTime[col] = result[col];
-                component.renderTime();
-                return;
-            } 
-
-            for(let missingCols of missing) {
-                const stats = pointsOverNumber[missingCols];
-                
-                const numberWithMax = Object.keys(stats).reduce((a, b) => (stats[a] > stats[b]) ?a :b);
-                result[missingCols] = parseInt((stats[numberWithMax]) 
-                    ?numberWithMax :(result[missingCols] == "-" ?0 :result[missingCols]));
-            } */
-
 
             component.selectedTime = result;
             component.renderTime();
