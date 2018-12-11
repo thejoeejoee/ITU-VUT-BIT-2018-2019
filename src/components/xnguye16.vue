@@ -120,6 +120,7 @@ export default {
                 let time = new Date(1970, 0, 0, hours, minutes, 0, 0);
                 component.$emit('input', time);
             }
+            component.clearLine();
         },
         selectNumber: (numberOrder, number) => { 
             component.selectedTime[numberOrder] = number; 
@@ -270,6 +271,7 @@ export default {
                     }
                 }
             }
+
             
             // remaining
             const missing = Object.keys(result).filter(x => !setCols[x]);
@@ -397,6 +399,7 @@ export default {
     color: white;
     background-color: #0284bc;
     border-radius: 24px;
+    transition: all ease 450ms;
 }
 
 .canvasOverlay {
